@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Form Biodata</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FFF8DC 0%, #FFFACD 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* Left side - Form */
+        .form-section {
+            flex: 1;
+            padding: 80px 60px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.1) 10px,
+                rgba(255, 255, 255, 0.1) 20px
+            );
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-100px) translateY(-100px); }
+            100% { transform: translateX(100px) translateY(100px); }
+        }
+
+        .form-content {
+            position: relative;
+            z-index: 2;
+            max-width: 400px;
+        }
+
+        .brand {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .form-title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+
+        .form-description {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            padding: 15px 20px;
+            border: 3px solid #333;
+            border-radius: 50px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus {
+            border-color: #FFD700;
+            background: white;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        button {
+            padding: 18px 40px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background: #222;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Right side - Image */
+        .image-section {
+            flex: 1;
+            background: linear-gradient(135deg, #FFFACD 0%, #FFF8DC 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bee-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Multiple Bees */
+        .bee {
+            width: 200px;
+            height: 150px;
+            position: absolute;
+            animation: fly 4s ease-in-out infinite;
+        }
+
+        .bee:nth-child(1) {
+            top: 20%;
+            left: 30%;
+            animation-delay: 0s;
+        }
+
+        .bee:nth-child(2) {
+            top: 60%;
+            right: 20%;
+            animation-delay: 1.5s;
+            transform: scale(0.8);
+        }
+
+        .bee:nth-child(3) {
+            bottom: 30%;
+            left: 10%;
+            animation-delay: 3s;
+            transform: scale(0.6);
+        }
+
+        .bee-body {
+            width: 120px;
+            height: 80px;
+            background: repeating-linear-gradient(
+                90deg,
+                #FFD700 0px,
+                #FFD700 10px,
+                #333 10px,
+                #333 20px
+            );
+            border-radius: 50px;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .bee-head {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #333 0%, #111 100%);
+            border-radius: 50%;
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .bee-head::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 8px;
+            height: 8px;
+            background: #FF0000;
+            border-radius: 50%;
+            box-shadow: 20px 0 0 #FF0000;
+        }
+
+        .bee-wings {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+        }
+
+        .wing {
+            width: 50px;
+            height: 70px;
+            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.9) 0%, rgba(200, 200, 255, 0.6) 100%);
+            border-radius: 50%;
+            position: absolute;
+            animation: flutter 0.2s ease-in-out infinite alternate;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .wing-left {
+            left: -25px;
+            transform: rotate(-30deg);
+        }
+
+        .wing-right {
+            right: -25px;
+            transform: rotate(30deg);
+        }
+
+        @keyframes fly {
+            0%, 100% { transform: translateY(0px) rotate(0deg) translateX(0px); }
+            25% { transform: translateY(-30px) rotate(5deg) translateX(20px); }
+            50% { transform: translateY(-15px) rotate(0deg) translateX(0px); }
+            75% { transform: translateY(-40px) rotate(-5deg) translateX(-20px); }
+        }
+
+        @keyframes flutter {
+            0% { transform: scaleY(1) rotate(-30deg); }
+            100% { transform: scaleY(0.6) rotate(-35deg); }
+        }
+
+        /* Floating Particles */
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #FFD700;
+            border-radius: 50%;
+            animation: float-particles 8s linear infinite;
+        }
+
+        .particle:nth-child(4) { top: 10%; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(5) { top: 20%; right: 15%; animation-delay: 1s; }
+        .particle:nth-child(6) { bottom: 30%; left: 20%; animation-delay: 2s; }
+        .particle:nth-child(7) { top: 50%; right: 30%; animation-delay: 3s; }
+        .particle:nth-child(8) { bottom: 10%; right: 10%; animation-delay: 4s; }
+
+        @keyframes float-particles {
+            0% { transform: translateY(0px) scale(1); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(0.5); opacity: 0; }
+        }
+
+        /* Animated Honeycombs */
+        .honeycomb {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            animation: spin-pulse 6s ease-in-out infinite;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .honeycomb:nth-child(9) {
+            top: 15%;
+            right: 15%;
+            animation-delay: 0s;
+        }
+
+        .honeycomb:nth-child(10) {
+            top: 45%;
+            left: 5%;
+            animation-delay: 2s;
+            transform: scale(1.2);
+        }
+
+        .honeycomb:nth-child(11) {
+            bottom: 25%;
+            right: 25%;
+            animation-delay: 4s;
+            transform: scale(0.8);
+        }
+
+        .honeycomb:nth-child(12) {
+            top: 70%;
+            left: 40%;
+            animation-delay: 1s;
+            transform: scale(0.6);
+        }
+
+        @keyframes spin-pulse {
+            0%, 100% { 
+                opacity: 0.4; 
+                transform: scale(1) rotate(0deg); 
+            }
+            50% { 
+                opacity: 0.8; 
+                transform: scale(1.3) rotate(180deg); 
+            }
+        }
+
+        /* Bouncing Flowers */
+        .flowers {
+            position: absolute;
+            bottom: 5%;
+            left: 15%;
+            display: flex;
+            gap: 30px;
+        }
+
+        .flower {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            animation: bounce-flower 3s ease-in-out infinite;
+        }
+
+        .flower:nth-child(1) { animation-delay: 0s; }
+        .flower:nth-child(2) { animation-delay: 0.5s; }
+        .flower:nth-child(3) { animation-delay: 1s; }
+        .flower:nth-child(4) { animation-delay: 1.5s; }
+
+        .flower::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #FF69B4 30%, #FF1493 70%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            transform: rotate(45deg);
+        }
+
+        .flower::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            background: #FFD700;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+        }
+
+        @keyframes bounce-flower {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        /* Swirling Honey Drops */
+        .honey-drop {
+            position: absolute;
+            width: 10px;
+            height: 15px;
+            background: linear-gradient(to bottom, #FFD700 0%, #FFA500 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: honey-swirl 10s linear infinite;
+        }
+
+        .honey-drop:nth-child(13) {
+            top: 10%;
+            left: 50%;
+            animation-delay: 0s;
+        }
+
+        .honey-drop:nth-child(14) {
+            top: 30%;
+            right: 40%;
+            animation-delay: 2s;
+        }
+
+        .honey-drop:nth-child(15) {
+            bottom: 40%;
+            left: 30%;
+            animation-delay: 4s;
+        }
+
+        @keyframes honey-swirl {
+            0% { transform: rotate(0deg) translateX(100px) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: rotate(360deg) translateX(100px) rotate(-360deg); opacity: 0; }
+        }
+
+        /* Sparkles */
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #FFFFFF;
+            border-radius: 50%;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        .sparkle:nth-child(16) { top: 25%; left: 25%; animation-delay: 0s; }
+        .sparkle:nth-child(17) { top: 15%; right: 35%; animation-delay: 0.5s; }
+        .sparkle:nth-child(18) { bottom: 45%; left: 45%; animation-delay: 1s; }
+        .sparkle:nth-child(19) { top: 65%; right: 15%; animation-delay: 1.5s; }
+
+        @keyframes sparkle {
+            0%, 100% { 
+                opacity: 0; 
+                transform: scale(0); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1); 
+                box-shadow: 0 0 20px #FFFFFF;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .form-section {
+                padding: 40px 30px;
+            }
+            
+            .form-title {
+                font-size: 2rem;
+            }
+            
+            .brand {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Side - Form -->
+        <div class="form-section">
+            <div class="form-content">
+                <div class="brand">DIIZZY</div>
+                
+                <h1 class="form-title">Personal<br>Information</h1>
+                <p class="form-description">Fill Your Biodata With Sweet Details</p>
+                
+                <form action="/simpan" method="post">
+                    <div class="input-group">
+                        <label for="nama">Your Name</label>
+                        <input type="text" id="nama" name="nama" required placeholder="Enter your sweet name" />
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="tgllahir">Birth Date</label>
+                        <input type="date" id="tgllahir" name="tgllahir" required />
+                    </div>
+                    
+                    <button type="submit">SAVE DATA</button>
+                </form>
+                
+                <br>
+    <!-- Tombol ke halaman list (lihat semua data) -->
+    <a href="/list">
+        <button>Lihat Data</button>
+    </a>
+    
+    
+            </div>
+        </div>
+
+        <!-- Right Side - Bee Theme Image -->
+        <div class="image-section">
+            <div class="bee-container">
+                <!-- Multiple Flying Bees -->
+                <div class="bee">
+                    <div class="bee-head"></div>
+                    <div class="bee-body"></div>
+                    <div class="bee-wings">
+                        <div class="wing wing-left"></div>
+                        <div class="wing wing-right"></div>
+                    </div>
+                </div>
+                <div class="bee">
+                    <div class="bee-head"></div>
+                    <div class="bee-body"></div>
+                    <div class="bee-wings">
+                        <div class="wing wing-left"></div>
+                        <div class="wing wing-right"></div>
+                    </div>
+                </div>
+                <div class="bee">
+                    <div class="bee-head"></div>
+                    <div class="bee-body"></div>
+                    <div class="bee-wings">
+                        <div class="wing wing-left"></div>
+                        <div class="wing wing-right"></div>
+                    </div>
+                </div>
+                
+                <!-- Floating Particles -->
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                
+                <!-- Animated Honeycombs -->
+                <div class="honeycomb"></div>
+                <div class="honeycomb"></div>
+                <div class="honeycomb"></div>
+                <div class="honeycomb"></div>
+                
+                <!-- Swirling Honey Drops -->
+                <div class="honey-drop"></div>
+                <div class="honey-drop"></div>
+                <div class="honey-drop"></div>
+                
+                <!-- Sparkles -->
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                
+                <!-- Bouncing Flowers -->
+                <div class="flowers">
+                    <div class="flower"></div>
+                    <div class="flower"></div>
+                    <div class="flower"></div>
+                    <div class="flower"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
